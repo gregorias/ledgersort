@@ -8,7 +8,7 @@ module Parse
   )
 where
 
-import Control.Monad (guard)
+import Control.Monad (guard, void)
 import Data.Bifunctor (Bifunctor (first))
 import Data.Functor (($>))
 import Data.Text (Text)
@@ -74,11 +74,12 @@ datedLine = label "a line with a date" $ do
         p <- chunk "P"
         spaces <- T.pack <$> MP.some spaceChar
         return $ T.append p spaces
-  optional pricePrefix
+  void $ optional pricePrefix
   day <- date
-  MP.manyTill
-    printChar
-    ((T.singleton <$> newline) <|> (eof $> ""))
+  void $
+    MP.manyTill
+      printChar
+      ((T.singleton <$> newline) <|> (eof $> ""))
   return day
 
 datedChunk :: Parser DatedChunk
@@ -106,10 +107,10 @@ preamble = label "preamble (comments and configuration)" $ do
 
 journalParser :: Parser Journal
 journalParser = do
-  preamble <- preamble
+  preambleText <- preamble
   datedChunks <- sepBy datedChunk (try $ some emptyLine)
   eof
-  return $ Journal preamble datedChunks
+  return $ Journal preambleText datedChunks
 
 parseJournal :: Text -> Either String Journal
 parseJournal input = first errorBundlePretty $ parse journalParser "" input
