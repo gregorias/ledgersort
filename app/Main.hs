@@ -1,5 +1,3 @@
-module Main where
-
 import qualified Data.Text.IO as T
 import Lib (sort)
 import System.Exit (exitFailure)
