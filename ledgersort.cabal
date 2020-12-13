@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           ledgersort
-version:        0.1.0.0
+version:        1.0.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/ledgersort#readme>
 homepage:       https://github.com/gregorias/ledgersort#readme
 bug-reports:    https://github.com/gregorias/ledgersort/issues
