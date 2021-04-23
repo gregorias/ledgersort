@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.2.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 
@@ -32,6 +32,8 @@ library
       Paths_ledgersort
   hs-source-dirs:
       src
+  default-extensions:
+      DerivingStrategies GeneralisedNewtypeDeriving InstanceSigs LambdaCase MultiWayIf NumericUnderscores ScopedTypeVariables TupleSections TypeApplications UnicodeSyntax
   build-depends:
       base >=4.7 && <5
     , megaparsec
@@ -45,6 +47,8 @@ executable ledgersort
       Paths_ledgersort
   hs-source-dirs:
       app
+  default-extensions:
+      DerivingStrategies GeneralisedNewtypeDeriving InstanceSigs LambdaCase MultiWayIf NumericUnderscores ScopedTypeVariables TupleSections TypeApplications UnicodeSyntax
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -61,6 +65,8 @@ test-suite ledgersort-test
       Paths_ledgersort
   hs-source-dirs:
       test
+  default-extensions:
+      DerivingStrategies GeneralisedNewtypeDeriving InstanceSigs LambdaCase MultiWayIf NumericUnderscores ScopedTypeVariables TupleSections TypeApplications UnicodeSyntax
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

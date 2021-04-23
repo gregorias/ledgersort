@@ -22,6 +22,19 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 
+# Defaults recommended by https://kowainik.github.io/posts/2019-02-06-style-guide#default-extensions
+default-extensions:
+  DerivingStrategies
+  GeneralisedNewtypeDeriving
+  InstanceSigs
+  LambdaCase
+  MultiWayIf
+  NumericUnderscores
+  ScopedTypeVariables
+  TupleSections
+  TypeApplications
+  UnicodeSyntax
+
 library:
   source-dirs: src
   dependencies:
