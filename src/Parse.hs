@@ -3,10 +3,9 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | This module parses input text into a journal
-module Parse
-  ( parseJournal,
-  )
-where
+module Parse (
+  parseJournal,
+) where
 
 import Control.Monad (guard, void)
 import Data.Bifunctor (Bifunctor (first))
@@ -15,31 +14,31 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Time (Day, defaultTimeLocale, parseTimeM)
 import Data.Void (Void)
-import Text.Megaparsec
-  ( Parsec,
-    chunk,
-    eof,
-    errorBundlePretty,
-    label,
-    lookAhead,
-    match,
-    noneOf,
-    optional,
-    parse,
-    sepBy,
-    single,
-    some,
-    someTill,
-    someTill_,
-    try,
-    (<|>),
-  )
+import Text.Megaparsec (
+  Parsec,
+  chunk,
+  eof,
+  errorBundlePretty,
+  label,
+  lookAhead,
+  many,
+  match,
+  noneOf,
+  optional,
+  parse,
+  single,
+  some,
+  someTill,
+  someTill_,
+  try,
+  (<|>),
+ )
 import qualified Text.Megaparsec as MP
 import Text.Megaparsec.Char (newline, printChar, spaceChar)
-import Types
-  ( DatedChunk (..),
-    Journal (..),
-  )
+import Types (
+  DatedChunk (..),
+  Journal (..),
+ )
 
 type Parser = Parsec Void Text
 
@@ -84,10 +83,15 @@ datedLine = label "a line with a date" $ do
 
 datedChunk :: Parser DatedChunk
 datedChunk = label "dated chunk (transaction or price statement)" $ do
-  comments <- T.concat <$> MP.many commentLine
-  (datedLineString, day) <- match datedLine
+  (comments, datedLineString, day) <- try start
   nels <- T.concat <$> MP.many nonEmptyLine
   return $ DatedChunk day (T.concat [comments, datedLineString, nels])
+ where
+  start = do
+    void $ many emptyLine
+    comments <- T.concat <$> MP.many commentLine
+    (datedLineString, day) <- match datedLine
+    return (comments, datedLineString, day)
 
 undatedChunk :: Parser Text
 undatedChunk = do
@@ -108,9 +112,10 @@ preamble = label "preamble (comments and configuration)" $ do
 journalParser :: Parser Journal
 journalParser = do
   preambleText <- preamble
-  datedChunks <- sepBy datedChunk (try $ some emptyLine)
+  datedChunks <- many datedChunk
+  suffix <- T.pack <$> MP.many newline
   eof
-  return $ Journal preambleText datedChunks
+  return $ Journal preambleText datedChunks suffix
 
 parseJournal :: Text -> Either String Journal
 parseJournal input = first errorBundlePretty $ parse journalParser "" input

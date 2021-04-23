@@ -1,9 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
-  ( sort,
-  )
-where
+module Lib (
+  sort,
+) where
 
 import Data.Bifunctor (Bifunctor (first))
 import Data.Function (on)
@@ -14,19 +13,20 @@ import Parse (parseJournal)
 import Types (Journal (..), dcContent, dcDate)
 
 showJournal :: Journal -> Text
-showJournal (Journal preamble datedChunks) =
+showJournal (Journal preamble datedChunks suffix) =
   T.concat
-    [ preamble,
-      T.intercalate
+    [ preamble
+    , T.intercalate
         "\n"
         (map dcContent datedChunks)
+    , suffix
     ]
 
 sortJournal :: Journal -> Journal
-sortJournal j = j {jDatedChunks = sortedChunks}
-  where
-    unsortedChunks = jDatedChunks j
-    sortedChunks = sortBy (compare `on` dcDate) unsortedChunks
+sortJournal j = j{jDatedChunks = sortedChunks}
+ where
+  unsortedChunks = jDatedChunks j
+  sortedChunks = sortBy (compare `on` dcDate) unsortedChunks
 
 -- | Parses and sorts a journal
 sort :: Text -> Either Text Text
